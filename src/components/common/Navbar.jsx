@@ -1,6 +1,7 @@
-import Logo from "../assets/logo.png";
+import Logo from "../../assets/logo.png";
 import { Link, matchPath } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { FaUserSecret } from "react-icons/fa";
 
 const Navbar = () => {
   const location = useLocation();
@@ -17,18 +18,19 @@ const Navbar = () => {
 
   return (
     <div
-      className={`flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700 ${
-        location.pathname !== "/" ? "bg-gray-50" : ""
-      } transition-all duration-200`}
+      className={`flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700 bg-gray-50 transition-all duration-200`}
     >
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         {/* Logo */}
         <Link to="/">
-          <img src={Logo} height={40} width={150} alt="tracksoft-logo" />
+          <div className="flex items-center">
+            <FaUserSecret color="#130969" size={25} />
+            <img src={Logo} height={40} width={150} alt="tracksoft-logo" />
+          </div>
         </Link>
 
         {/* NavLinks */}
-        <nav className="hidden md:block">
+        <nav className="hidden md:block text-xl">
           <ul className="flex gap-x-6 text-richblack-25">
             {navLinks.map((ele, index) => {
               return (
@@ -36,8 +38,8 @@ const Navbar = () => {
                   <div
                     className={`cursor-pointer font-semibold ${
                       matchRoute(`${ele.link}`)
-                        ? "text-[#15BCD1]"
-                        : "text-black"
+                        ? "text-blue"
+                        : "text-grey"
                     }`}
                   >
                     <li>{ele.name}</li>
@@ -52,13 +54,13 @@ const Navbar = () => {
           {/* Login / Signup  */}
           <div className="flex gap-2">
             <Link to="/login">
-              <button className="rounded-[8px] border border-richblack-700 px-[12px] py-[8px]">
+              <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
                 Log in
               </button>
             </Link>
 
             <Link to="/signup">
-              <button className="rounded-[8px] border border-richblack-700 px-[12px] py-[8px]">
+              <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
                 Sign up
               </button>
             </Link>
