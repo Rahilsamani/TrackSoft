@@ -6,7 +6,7 @@ const Button = ({ text, link }) => {
   return (
     <div className="border-custom rounded-lg px-2 py-1 group hover:bg-[#fff] transition-colors duration-200 w-fit">
       <button
-        className="flex gap-2 items-center group-hover:gap-4 transition-all duration-200"
+        className="flex gap-2 items-center group-hover:gap-4 transition-all duration-200 text-lg"
         onClick={() => naviagte(link)}
       >
         {text}{" "}

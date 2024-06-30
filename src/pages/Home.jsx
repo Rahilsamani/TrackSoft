@@ -32,8 +32,8 @@ const Home = () => {
             <img src={Home1} alt="homeImage1" />
           </div>
           <div className="w-1/2 flex flex-col gap-2">
-            <h2 className="text-5xl font-semibold text-blue text-shadow-custom leading-[1.8]">
-              Employee Monitoring
+            <h2 className="text-5xl font-semibold text-blue text-shadow-custom leading-[1.3] mb-3">
+              Employee Monitoring System
             </h2>
             <p className="text-grey text-lg pr-16">
               It's Impossible To Watch Your Employees Every Minute Of The Day.
