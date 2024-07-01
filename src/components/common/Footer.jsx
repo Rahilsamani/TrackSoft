@@ -34,7 +34,7 @@ const Footer = () => {
               <div className="flex items-center gap-1 cursor-pointer group">
                 <FaChevronRight size={14} className="text-blue" />
                 <p className="group-hover:text-black transition-colors duration-200">
-                  Demo
+                  DashBoard
                 </p>
               </div>
             </div>
