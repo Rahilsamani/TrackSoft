@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+th,
+td {
+  border: 1px solid #130969;
+  text-align: center;
+}
