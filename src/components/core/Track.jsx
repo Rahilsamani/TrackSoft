@@ -9,6 +9,22 @@ const Track = () => {
   const [inTime, setInTime] = useState("");
   const [timeStr, setTimeStr] = useState("00:00:00");
 
+  useEffect(() => {
+    // The Timer will reset after midnight
+    const checkMidnight = setInterval(() => {
+      const now = new Date();
+      if (
+        now.getHours() === 0 &&
+        now.getMinutes() === 0 &&
+        now.getSeconds() === 0
+      ) {
+        resetTimer();
+      }
+    }, 1000);
+
+    return () => clearInterval(checkMidnight);
+  }, []);
+
   const startTimer = () => {
     if (!timer) {
       const today = new Date();
@@ -95,7 +111,7 @@ const Track = () => {
           {timeStr}
         </div>
         {/* Buttons */}
-        <div className="flex justify-center items-center gap-2 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
+        <div className="flex justify-center items-center gap-10 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
           <button
             className="border border-black rounded-sm px-2"
             onClick={startTimer}
@@ -107,12 +123,6 @@ const Track = () => {
             onClick={stopTimer}
           >
             Stop
-          </button>
-          <button
-            className="border border-black rounded-sm px-2"
-            onClick={resetTimer}
-          >
-            Reset
           </button>
         </div>
       </div>
