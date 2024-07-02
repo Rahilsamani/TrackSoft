@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import os
 import shutil
 from datetime import datetime
@@ -17,6 +17,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# mount media folder
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # create default background scheduler
 sched = BackgroundScheduler()
@@ -72,7 +75,7 @@ def get_screenshots():
     if not os.path.exists("media"):
         os.mkdir("media")
     photo_files = os.listdir("media")
-    photo_urls = [os.path.join("media", photo) for photo in photo_files if photo.endswith('.png')]
+    photo_urls = [f"/media/{photo}" for photo in photo_files if photo.endswith('.png')]
     return {"photo_urls": photo_urls}
 
 
