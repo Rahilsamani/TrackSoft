@@ -6,11 +6,7 @@ import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Track from "./components/core/Track";
 import Screenshot from "./pages/Screenshot";
-import Holiday from "./pages/Holiday";
-import Leave from "./pages/Leave";
-import Payroll from "./pages/Payroll";
-import Members from "./pages/Members";
-import FileUploads from "./pages/FileUploads";
+import UnderDevelopment from "./components/common/UnderDevelopment";
 
 function App() {
   return (
@@ -23,11 +19,11 @@ function App() {
         <Route element={<Dashboard />}>
           <Route path="dashboard/track" element={<Track />} />
           <Route path="dashboard/screenshot" element={<Screenshot />} />
-          <Route path="dashboard/holiday" element={<Holiday />} />
-          <Route path="dashboard/leave" element={<Leave />} />
-          <Route path="dashboard/payroll" element={<Payroll />} />
-          <Route path="dashboard/members" element={<Members />} />
-          <Route path="dashboard/upload" element={<FileUploads />} />
+          <Route path="dashboard/holiday" element={<UnderDevelopment />} />
+          <Route path="dashboard/leave" element={<UnderDevelopment />} />
+          <Route path="dashboard/payroll" element={<UnderDevelopment />} />
+          <Route path="dashboard/members" element={<UnderDevelopment />} />
+          <Route path="dashboard/upload" element={<UnderDevelopment />} />
         </Route>
       </Routes>
       <Footer />
