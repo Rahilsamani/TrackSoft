@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/common/Navbar";
-import Footer from "./components/common/Footer";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Track from "./components/core/Track";
@@ -29,7 +28,6 @@ function App() {
 
         <Route path="*" element={<Error />} />
       </Routes>
-      <Footer />
     </div>
   );
 }

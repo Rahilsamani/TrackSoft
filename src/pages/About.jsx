@@ -1,5 +1,6 @@
 import Button from "../components/common/Button";
 import Home2 from "../assets/productivity.png";
+import Footer from "../components/common/Footer";
 
 const About = () => {
   return (
@@ -32,6 +33,9 @@ const About = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

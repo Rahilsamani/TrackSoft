@@ -4,6 +4,7 @@ import Button from "../components/common/Button";
 import FeaturesCard from "../components/core/FeaturesCard";
 import BlogSection from "../components/core/BlogSection";
 import About from "./About";
+import Footer from "../components/common/Footer";
 
 const Home = () => {
   const featuresDetails = [
@@ -71,6 +72,9 @@ const Home = () => {
 
       {/* Section 4 */}
       <BlogSection />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Track = () => {
   const [timer, setTimer] = useState(null);
@@ -25,7 +26,7 @@ const Track = () => {
     return () => clearInterval(checkMidnight);
   }, []);
 
-  const startTimer = () => {
+  const startTimer = async () => {
     if (!timer) {
       const today = new Date();
       setInTime(formatTime(today));
@@ -44,13 +45,27 @@ const Track = () => {
         });
       }, 1000);
       setTimer(newTimer);
+
+      try {
+        await axios.post("http://localhost:8000/start_screenshot");
+        console.log("Screenshot taking started");
+      } catch (error) {
+        console.error("Error starting screenshot taking:", error);
+      }
     }
   };
 
-  const stopTimer = () => {
+  const stopTimer = async () => {
     clearInterval(timer);
     setTimer(null);
     insertElement();
+
+    try {
+      await axios.post("http://localhost:8000/stop_screenshot");
+      console.log("Screenshot taking stopped");
+    } catch (error) {
+      console.error("Error stopping screenshot taking:", error);
+    }
   };
 
   const resetTimer = () => {
