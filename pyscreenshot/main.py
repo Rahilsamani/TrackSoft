@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import shutil
 from datetime import datetime
@@ -7,6 +8,15 @@ import pyscreenshot as ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = FastAPI()
+
+# cors middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # create default background scheduler
 sched = BackgroundScheduler()
