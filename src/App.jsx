@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Track from "./components/core/Track";
 import Screenshot from "./pages/Screenshot";
 import UnderDevelopment from "./components/common/UnderDevelopment";
+import Error from "./pages/Error";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
           <Route path="dashboard/members" element={<UnderDevelopment />} />
           <Route path="dashboard/upload" element={<UnderDevelopment />} />
         </Route>
+
+        <Route path="*" element={<Error />} />
       </Routes>
       <Footer />
     </div>
