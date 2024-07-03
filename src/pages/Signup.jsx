@@ -2,9 +2,14 @@ import { useForm, Controller } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     control,
@@ -29,8 +34,37 @@ const Signup = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data:", data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    const toastId = toast.loading("Loading...");
+
+    const formData = new FormData();
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.lastName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("image", data.image);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/v1/auth/signup",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.dismiss(toastId);
+      toast.success("Successfully Registered");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+      toast.dismiss(toastId);
+      toast.error("Something Went Wrong!");
+    }
+    setLoading(false);
   };
 
   return (
@@ -47,7 +81,7 @@ const Signup = () => {
               control={control}
               name="image"
               rules={{ required: "Image is required" }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
+              render={({ field: { onChange, onBlur, ref } }) => (
                 <div
                   {...getRootProps()}
                   className="w-[150px] flex justify-center items-center h-[150px] p-2 border border-gray-300 mx-auto rounded-[100%] mt-2 cursor-pointer"
