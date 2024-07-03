@@ -12,14 +12,14 @@ import cloudinary.uploader
 # load .env file
 load_dotenv()
 
-app = FastAPI()
-
-# config cloudinary 
+# config cloudinary
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key=os.getenv('CLOUDINARY_API_KEY'),
     api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
+
+app = FastAPI()
 
 # cors middleware
 app.add_middleware(
@@ -32,9 +32,9 @@ app.add_middleware(
 
 # create default background scheduler
 sched = BackgroundScheduler()
+sched.start()
 
-isrunning = True
-onetime = True
+isrunning = False
 
 # function for taking screenshot
 def take_screenshot():
@@ -42,12 +42,12 @@ def take_screenshot():
     
     screen_shot = ImageGrab.grab()
     
-    # save in temp file
+    # Save screenshot to a temporary location
     temp_path = f"./{image_name}"
     screen_shot.save(temp_path)
 
     # upload in cloudinary
-    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
+    response = cloudinary.uploader.upload(temp_path, folder="screenshots")
 
     # remove the temp file
     os.remove(temp_path)
@@ -61,33 +61,36 @@ def clear_media():
 # api for taking screenshots
 @app.post("/start_screenshot")
 def start_screenshot(background_tasks: BackgroundTasks):
-    global onetime, isrunning
-    if onetime:
-        sched.add_job(take_screenshot, 'interval', seconds=5)
-        sched.add_job(clear_media, 'cron', hour=23, minute=42)
-        sched.start()
-        onetime = False
-        isrunning = True
-    elif not isrunning:
-        sched.resume()
+    global isrunning
+    if not isrunning:
+        if not sched.get_job('screenshot_job'):
+            sched.add_job(take_screenshot, 'interval', seconds=5, id='screenshot_job')
+        else:
+            sched.resume_job('screenshot_job')
+        
+        if not sched.get_job('clear_media_job'):
+            sched.add_job(clear_media, 'cron', hour=23, minute=42, id='clear_media_job')
+        else:
+            sched.resume_job('clear_media_job')
+        
         isrunning = True
     return {"message": "Screenshot taking started"}
 
 # api for stopping the screenshots
 @app.post("/stop_screenshot")
 def stop_screenshot():
-    global isrunning, onetime
+    global isrunning
     if isrunning:
-        sched.pause()
+        sched.pause_job('screenshot_job')
+        sched.pause_job('clear_media_job')
         isrunning = False
-        onetime = True
     return {"message": "Screenshot taking stopped"}
 
 #api for listing all the screenshots
 @app.get("/screenshots")
 def get_screenshots():
     # cloudinary api for fetching all images
-    response = cloudinary.api.resources(type="upload", prefix="TrackSoft")
+    response = cloudinary.api.resources(type="upload", prefix="screenshots")
     photo_urls = [resource['secure_url'] for resource in response['resources']]
     return {"photo_urls": photo_urls}
 
