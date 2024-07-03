@@ -1,20 +1,41 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { useDropzone } from "react-dropzone";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Signup = () => {
+  const [preview, setPreview] = useState(null);
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm();
 
+  const onDrop = (acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      setValue("image", file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png"],
+    },
+  });
+
   const onSubmit = (data) => {
-    console.log(data);
+    console.log("Form data:", data);
   };
 
   return (
     <div className="bg-[#F6F5F5ff] flex justify-center items-center">
-      <div className="bg-white w-[45%] shadow-xl h-screen p-5 mt-10 mb-20">
+      <div className="bg-white w-[45%] shadow-xl p-5 mt-10 mb-20">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-3xl font-semibold text-center mb-5 text-blue">
             REGISTER NOW
@@ -22,14 +43,40 @@ const Signup = () => {
 
           {/* Profile Image */}
           <div className="mb-4">
-            <label className="block text-gray-700">Profile Image</label>
-            <input
-              type="file"
-              {...register("image", { required: true })}
-              className="w-full p-2 border border-gray-300 rounded mt-2"
+            <Controller
+              control={control}
+              name="image"
+              rules={{ required: "Image is required" }}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <div
+                  {...getRootProps()}
+                  className="w-[150px] flex justify-center items-center h-[150px] p-2 border border-gray-300 mx-auto rounded-[100%] mt-2 cursor-pointer"
+                >
+                  <input
+                    {...getInputProps()}
+                    onChange={(e) => {
+                      onChange(e);
+                      onDrop(e.target.files);
+                    }}
+                    onBlur={onBlur}
+                    ref={ref}
+                  />
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt="Profile Preview"
+                      className="w-full h-full rounded-[100%]"
+                    />
+                  ) : (
+                    <p className="text-gray-500">Add Profile Image</p>
+                  )}
+                </div>
+              )}
             />
             {errors.image && (
-              <p className="text-red-500 text-sm mt-1">Image is required</p>
+              <p className="text-red-500 text-sm mt-1 text-center">
+                {errors.image.message}
+              </p>
             )}
           </div>
 
@@ -80,7 +127,7 @@ const Signup = () => {
           </div>
 
           {/* Password And Confirm Password */}
-          <div className="flex gap-2" >
+          <div className="flex gap-2">
             <div className="w-1/2">
               <label className="block text-gray-700">Password</label>
               <input
@@ -102,6 +149,8 @@ const Signup = () => {
                 type="password"
                 {...register("confirmPassword", {
                   required: true,
+                  validate: (value) =>
+                    value === watch("password") || "Passwords do not match",
                 })}
                 placeholder="Confirm your password"
                 className="w-full p-2 border border-gray-300 rounded mt-2"
