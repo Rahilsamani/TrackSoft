@@ -9,6 +9,7 @@ const Track = () => {
   const [srNo, setSrNo] = useState(0);
   const [inTime, setInTime] = useState("");
   const [timeStr, setTimeStr] = useState("00:00:00");
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
     // The Timer will reset after midnight
@@ -45,6 +46,7 @@ const Track = () => {
         });
       }, 1000);
       setTimer(newTimer);
+      setIsRunning(true);
 
       try {
         await axios.post("http://localhost:8000/start_screenshot");
@@ -58,6 +60,7 @@ const Track = () => {
   const stopTimer = async () => {
     clearInterval(timer);
     setTimer(null);
+    setIsRunning(false);
     insertElement();
 
     try {
@@ -75,6 +78,7 @@ const Track = () => {
     setMin(0);
     setHour(0);
     setTimeStr("00:00:00");
+    setIsRunning(false);
   };
 
   const formatTime = (date) => {
@@ -121,21 +125,23 @@ const Track = () => {
     <div className="flex flex-col justify-center items-center">
       {/* Timer */}
       <div className="w-1/3 flex flex-col justify-center items-center h-1/3 mt-16">
-        {/* Time  */}
+        {/* Time */}
         <div className="flex justify-center items-center text-center w-full p-5 text-[#f3f3f3] bg-[#202f5e] rounded-t-lg text-3xl">
           {timeStr}
         </div>
         {/* Buttons */}
         <div className="flex justify-center items-center gap-10 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
           <button
-            className="border border-black rounded-sm px-2"
+            className={`border border-black ${isRunning && 'opacity-50'} rounded-sm px-2`}
             onClick={startTimer}
+            disabled={isRunning}
           >
             Start
           </button>
           <button
-            className="border border-black rounded-sm px-2"
+            className={`border border-black ${!isRunning && 'opacity-50'} rounded-sm px-2`}
             onClick={stopTimer}
+            disabled={!isRunning}
           >
             Stop
           </button>

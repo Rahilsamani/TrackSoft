@@ -47,7 +47,7 @@ def take_screenshot():
     screen_shot.save(temp_path)
 
     # upload in cloudinary
-    response = cloudinary.uploader.upload(temp_path, folder="screenshots")
+    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
 
     # remove the temp file
     os.remove(temp_path)
