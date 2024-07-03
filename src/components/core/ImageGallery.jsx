@@ -1,5 +1,3 @@
-import React from "react";
-
 const ImageGallery = ({ images = [] }) => {
   return (
     <div className="flex justify-center items-center">

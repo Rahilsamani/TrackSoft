@@ -3,8 +3,8 @@ import Home1 from "../assets/Home1.png";
 import Button from "../components/common/Button";
 import FeaturesCard from "../components/core/FeaturesCard";
 import BlogSection from "../components/core/BlogSection";
-import About from "./About";
 import Footer from "../components/common/Footer";
+import AboutContent from "../components/common/AboutContent";
 
 const Home = () => {
   const featuresDetails = [
@@ -68,7 +68,7 @@ const Home = () => {
       </div>
 
       {/* section 3 */}
-      <About />
+      <AboutContent />
 
       {/* Section 4 */}
       <BlogSection />

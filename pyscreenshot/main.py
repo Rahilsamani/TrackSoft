@@ -1,13 +1,25 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 import os
 import shutil
 from datetime import datetime
 import pyscreenshot as ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
+import cloudinary
+import cloudinary.uploader
+
+# load .env file
+load_dotenv()
 
 app = FastAPI()
+
+# config cloudinary 
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 # cors middleware
 app.add_middleware(
@@ -18,9 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# mount media folder
-app.mount("/media", StaticFiles(directory="media"), name="media")
-
 # create default background scheduler
 sched = BackgroundScheduler()
 
@@ -29,14 +38,19 @@ onetime = True
 
 # function for taking screenshot
 def take_screenshot():
-    if not os.path.exists("media"):
-        os.mkdir("media")
-
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
-    file_path_loc = f"./media/{image_name}"
     
     screen_shot = ImageGrab.grab()
-    screen_shot.save(file_path_loc)
+    
+    # save in temp file
+    temp_path = f"./{image_name}"
+    screen_shot.save(temp_path)
+
+    # upload in cloudinary
+    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
+
+    # remove the temp file
+    os.remove(temp_path)
 
 # function to clear the screenshots
 def clear_media():
@@ -72,10 +86,9 @@ def stop_screenshot():
 #api for listing all the screenshots
 @app.get("/screenshots")
 def get_screenshots():
-    if not os.path.exists("media"):
-        os.mkdir("media")
-    photo_files = os.listdir("media")
-    photo_urls = [f"/media/{photo}" for photo in photo_files if photo.endswith('.png')]
+    # cloudinary api for fetching all images
+    response = cloudinary.api.resources(type="upload", prefix="TrackSoft")
+    photo_urls = [resource['secure_url'] for resource in response['resources']]
     return {"photo_urls": photo_urls}
 
 
