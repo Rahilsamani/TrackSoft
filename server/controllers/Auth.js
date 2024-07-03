@@ -8,7 +8,7 @@ const signUp = async (req, res) => {
   try {
     // Fetch Data
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-    const { image } = req.file;
+    const image = req.files?.image;
 
     // Data Validation
     if (
