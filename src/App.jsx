@@ -7,6 +7,7 @@ import Track from "./components/core/Track";
 import Screenshot from "./pages/Screenshot";
 import UnderDevelopment from "./components/common/UnderDevelopment";
 import Error from "./pages/Error";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/signup" element={<Signup />} />
 
         <Route element={<Dashboard />}>
           <Route path="dashboard/track" element={<Track />} />
