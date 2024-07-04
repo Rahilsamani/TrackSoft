@@ -2,9 +2,11 @@ import Logo from "../../assets/logo.png";
 import { Link, matchPath } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FaUserSecret } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
 
   function matchRoute(route) {
     return matchPath({ path: route }, location.pathname);
@@ -37,9 +39,7 @@ const Navbar = () => {
                 <Link to={ele.link} key={index}>
                   <div
                     className={`cursor-pointer font-semibold ${
-                      matchRoute(`${ele.link}`)
-                        ? "text-blue"
-                        : "text-grey"
+                      matchRoute(`${ele.link}`) ? "text-blue" : "text-grey"
                     }`}
                   >
                     <li>{ele.name}</li>
@@ -52,22 +52,29 @@ const Navbar = () => {
 
         <div>
           {/* Login / Signup  */}
-          <div className="flex gap-2">
-            <Link to="/login">
-              <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
-                Log in
-              </button>
-            </Link>
+          {!user && (
+            <div className="flex gap-2">
+              <Link to="/login">
+                <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
+                  Log in
+                </button>
+              </Link>
 
-            <Link to="/signup">
-              <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
-                Sign up
-              </button>
-            </Link>
-          </div>
+              <Link to="/signup">
+                <button className="rounded-[8px] font-medium border border-neutral-300 px-[12px] py-[8px]">
+                  Sign up
+                </button>
+              </Link>
+            </div>
+          )}
 
           {/* profile picture */}
-          <div></div>
+          <div className="cursor-pointer flex items-center gap-2">
+            <p className="text-blue text-lg font-medium">{user.firstName}</p>
+            <div className="w-[50px] rounded-full border">
+              <img src={user?.image} alt="" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
