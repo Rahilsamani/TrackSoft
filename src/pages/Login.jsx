@@ -4,10 +4,13 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "../slices/authSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -34,6 +37,11 @@ const Login = () => {
       );
       toast.dismiss(toastId);
       toast.success("Login Successfull");
+      console.log(response.data);
+      // add in redux
+      dispatch(setToken(response.data.token));
+      dispatch(setUser({ ...response.data.user }));
+
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error.message);
