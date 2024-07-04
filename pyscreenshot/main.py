@@ -101,26 +101,7 @@ async def start_screenshot(
             sched.resume_job('clear_media_job')
         
         isrunning = True
-    return {"message": "Screenshot taking started"}
-
-# api for stopping the screenshots
-@app.post("/stop_screenshot")
-def stop_screenshot():
-    global isrunning
-    if isrunning:
-        sched.pause_job('screenshot_job')
-        sched.pause_job('clear_media_job')
-        isrunning = False
-    return {"message": "Screenshot taking stopped"}
-
-#api for listing all the screenshots
-@app.get("/screenshots")
-def get_screenshots():
-    # cloudinary api for fetching all images
-    response = cloudinary.api.resources(type="upload", prefix="screenshots")
-    photo_urls = [resource['secure_url'] for resource in response['resources']]
-    return {"photo_urls": photo_urls}
-
+    return
 
 # Run the application
 if __name__ == "__main__":

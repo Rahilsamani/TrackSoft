@@ -1,6 +1,6 @@
 const ImageGallery = ({ images = [] }) => {
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       {images.length === 0 ? (
         <div className="text-center text-2xl">
           No screenshots have been taken yet
@@ -10,7 +10,7 @@ const ImageGallery = ({ images = [] }) => {
           {images.map((img, index) => (
             <div key={index} className="p-2">
               <img
-                src={`http://localhost:8000${img}`}
+                src={img}
                 alt={`Screenshot ${index}`}
                 className="w-full h-auto"
               />

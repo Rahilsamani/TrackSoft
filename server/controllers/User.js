@@ -40,4 +40,33 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { updateUser };
+const getAllScreenshots = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const screenshots = user.screenshots || [];
+
+    return res.status(200).json({
+      success: true,
+      screenshots,
+      message: "Screenshots fetched successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching screenshots of the user",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { updateUser, getAllScreenshots };
