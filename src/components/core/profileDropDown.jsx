@@ -4,6 +4,7 @@ import {
   AiOutlineHome,
   AiOutlineInfoCircle,
 } from "react-icons/ai";
+import { GiProgression } from "react-icons/gi";
 import { VscSignOut } from "react-icons/vsc";
 import { FiMonitor, FiImage } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,6 +70,13 @@ export default function ProfileDropdown() {
             >
               <FiMonitor />
               <p>Track</p>
+            </Link>
+            <Link
+              to="/dashboard/progress"
+              className="flex items-center gap-x-2 px-2 py-1 hover:bg-slate-100"
+            >
+              <GiProgression />
+              <p>Progress</p>
             </Link>
             <Link
               to="/dashboard/screenshot"

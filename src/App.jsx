@@ -11,10 +11,11 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import OpenRoute from "./components/core/OpenRoute";
 import PrivateRoute from "./components/core/PrivateRoute";
+import Progress from "./pages/Progress";
 
 function App() {
   return (
-    <div className="w-full overflow-hidden" >
+    <div className="w-full overflow-hidden">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -45,6 +46,7 @@ function App() {
         >
           <Route path="dashboard/track" element={<Track />} />
           <Route path="dashboard/screenshot" element={<Screenshot />} />
+          <Route path="dashboard/progress" element={<Progress />} />
           <Route path="dashboard/holiday" element={<UnderDevelopment />} />
           <Route path="dashboard/leave" element={<UnderDevelopment />} />
           <Route path="dashboard/payroll" element={<UnderDevelopment />} />

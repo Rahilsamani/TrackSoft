@@ -76,13 +76,6 @@ const updateDailyProgress = async (req, res) => {
     const userId = req.user.id;
     const { tableData } = req.body;
 
-    if (!tableData) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid tableData format",
-      });
-    }
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -92,17 +85,27 @@ const updateDailyProgress = async (req, res) => {
       });
     }
 
-    const todayProgress = user.progress.find(
+    let todayProgress = user.progress.find(
       (progress) => progress.date === date
     );
 
     if (todayProgress) {
-      todayProgress.tableData.push(tableData._id);
+      todayProgress.tableData.push(tableData);
+
+      const totalHours = todayProgress.tableData.reduce(
+        (acc, data) => acc + data.workHours,
+        0
+      );
+
+      todayProgress.totalWork = totalHours;
     } else {
-      user.progress.push({
+      const newProgress = {
         date,
-        tableData,
-      });
+        tableData: [tableData],
+        totalWork: tableData.workHours,
+      };
+
+      user.progress.push(newProgress);
     }
 
     await user.save();

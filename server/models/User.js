@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema(
             ref: "TableData",
           },
         ],
+        totalWork: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
   },
