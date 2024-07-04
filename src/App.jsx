@@ -8,6 +8,7 @@ import Screenshot from "./pages/Screenshot";
 import UnderDevelopment from "./components/common/UnderDevelopment";
 import Error from "./pages/Error";
 import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
 
         <Route element={<Dashboard />}>
           <Route path="dashboard/track" element={<Track />} />

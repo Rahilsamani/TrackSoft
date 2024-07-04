@@ -58,8 +58,8 @@ const Home = () => {
           <div className="flex justify-between items-center gap-10 mt-10">
             {featuresDetails.map((feature, index) => {
               return (
-                <div className="w-1/3">
-                  <FeaturesCard {...feature} key={index} />
+                <div className="w-1/3" key={index}>
+                  <FeaturesCard {...feature} />
                 </div>
               );
             })}

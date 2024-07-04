@@ -43,8 +43,8 @@ const BlogSection = () => {
         <div className="flex justify-between items-center gap-10 mt-10">
           {blogsDetails.map((blog, index) => {
             return (
-              <div className="w-[320px]">
-                <BlogsCard key={index} {...blog} />
+              <div className="w-[320px]" key={index}>
+                <BlogsCard {...blog} />
               </div>
             );
           })}
