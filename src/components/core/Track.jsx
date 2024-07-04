@@ -11,20 +11,38 @@ const Track = () => {
   const [inTime, setInTime] = useState("");
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
+  const [tableData, setTableData] = useState([]);
   const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // The Timer will reset after midnight
-    const checkMidnight = setInterval(() => {
-      const now = new Date();
-      if (
-        now.getHours() === 0 &&
-        now.getMinutes() === 0 &&
-        now.getSeconds() === 0
-      ) {
-        resetTimer();
+    const checkAndResetData = () => {
+      const today = new Date().toLocaleDateString();
+      const storedDate = localStorage.getItem("lastResetDate");
+
+      if (storedDate !== today) {
+        resetAll();
+        localStorage.setItem("lastResetDate", today);
       }
-    }, 1000);
+    };
+
+    checkAndResetData();
+
+    const storedData = JSON.parse(localStorage.getItem("tableData"));
+    if (storedData) {
+      setTableData(storedData);
+      setSrNo(storedData.length);
+    }
+
+    const storedTimer = JSON.parse(localStorage.getItem("timerData"));
+    if (storedTimer) {
+      setSec(storedTimer.sec);
+      setMin(storedTimer.min);
+      setHour(storedTimer.hour);
+      setIsRunning(storedTimer.isRunning);
+      if (storedTimer.isRunning) {
+        startTimer();
+      }
+    }
 
     return () => clearInterval(checkMidnight);
   }, []);
@@ -49,6 +67,7 @@ const Track = () => {
       }, 1000);
       setTimer(newTimer);
       setIsRunning(true);
+      saveTimerData(true);
 
       try {
         await axios.post(
@@ -70,6 +89,7 @@ const Track = () => {
     clearInterval(timer);
     setTimer(null);
     setIsRunning(false);
+    saveTimerData(false);
     insertElement();
 
     try {
@@ -87,6 +107,7 @@ const Track = () => {
     setHour(0);
     setTimeStr("00:00:00");
     setIsRunning(false);
+    localStorage.removeItem("timerData");
   };
 
   const formatTime = (date) => {
@@ -97,28 +118,43 @@ const Track = () => {
   };
 
   const insertElement = () => {
-    setSrNo((prevSrNo) => prevSrNo + 1);
-
     const date = new Date();
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
 
-    const today = new Date();
-    const outTime = formatTime(today);
+    const outTime = formatTime(date);
 
-    const table = document.getElementById("myTable");
-    const row = table.insertRow(-1);
+    const newRow = {
+      srNo: srNo + 1,
+      date: `${day}-${month}-${year}`,
+      inTime,
+      outTime,
+    };
 
-    const cell1 = row.insertCell(0);
-    const cell2 = row.insertCell(1);
-    const cell3 = row.insertCell(2);
-    const cell4 = row.insertCell(3);
+    const updatedTableData = [...tableData, newRow];
+    setTableData(updatedTableData);
+    setSrNo((prevSrNo) => prevSrNo + 1);
 
-    cell1.innerHTML = srNo + 1;
-    cell2.innerHTML = `${day}-${month}-${year}`;
-    cell3.innerHTML = inTime;
-    cell4.innerHTML = outTime;
+    // Save to local storage
+    localStorage.setItem("tableData", JSON.stringify(updatedTableData));
+  };
+
+  const saveTimerData = (isRunning) => {
+    const timerData = {
+      sec,
+      min,
+      hour,
+      isRunning,
+    };
+    localStorage.setItem("timerData", JSON.stringify(timerData));
+  };
+
+  const resetAll = () => {
+    resetTimer();
+    setTableData([]);
+    setSrNo(0);
+    localStorage.removeItem("tableData");
   };
 
   useEffect(() => {
@@ -127,6 +163,10 @@ const Track = () => {
     const hourStr = hour < 10 ? "0" + hour : hour;
 
     setTimeStr(`${hourStr}:${minStr}:${secStr}`);
+  }, [sec, min, hour]);
+
+  useEffect(() => {
+    saveTimerData(isRunning);
   }, [sec, min, hour]);
 
   return (
@@ -169,7 +209,16 @@ const Track = () => {
             <th>Out Time</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {tableData.map((row, index) => (
+            <tr key={index}>
+              <td>{row.srNo}</td>
+              <td>{row.date}</td>
+              <td>{row.inTime}</td>
+              <td>{row.outTime}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
