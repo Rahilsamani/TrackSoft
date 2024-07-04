@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { tableDataSchema } = require("./TableData");
 
 const userSchema = new mongoose.Schema(
   {
