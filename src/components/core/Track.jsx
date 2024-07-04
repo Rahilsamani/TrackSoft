@@ -43,8 +43,6 @@ const Track = () => {
         startTimer();
       }
     }
-
-    return () => clearInterval(checkMidnight);
   }, []);
 
   const startTimer = async () => {

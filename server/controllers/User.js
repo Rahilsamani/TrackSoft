@@ -69,4 +69,46 @@ const getAllScreenshots = async (req, res) => {
   }
 };
 
-module.exports = { updateUser, getAllScreenshots };
+const updateDailyProgress = async (userId, tableData) => {
+  const date = new Date().toLocaleDateString();
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const todayProgress = user.progress.find(
+      (progress) => progress.date === date
+    );
+
+    if (todayProgress) {
+      todayProgress.tableData = tableData;
+    } else {
+      user.progress.push({
+        date,
+        tableData,
+      });
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Progress updated successfully",
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating progress",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { updateUser, getAllScreenshots, updateDailyProgress };

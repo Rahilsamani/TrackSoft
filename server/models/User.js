@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { tableDataSchema } = require("./TableData");
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,8 +32,17 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    progress: [
+      {
+        date: {
+          type: String,
+          require: true,
+        },
+        tableData: [tableDataSchema],
+      },
+    ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model("User", userSchema);
