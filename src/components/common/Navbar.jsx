@@ -3,6 +3,7 @@ import { Link, matchPath } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FaUserSecret } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import ProfileDropdown from "../core/profileDropDown";
 
 const Navbar = () => {
   const location = useLocation();
@@ -69,12 +70,7 @@ const Navbar = () => {
           )}
 
           {/* profile picture */}
-          <div className="cursor-pointer flex items-center gap-2">
-            <p className="text-blue text-lg font-medium">{user.firstName}</p>
-            <div className="w-[50px] rounded-full border">
-              <img src={user?.image} alt="" />
-            </div>
-          </div>
+          {user && <ProfileDropdown />}
         </div>
       </div>
     </div>

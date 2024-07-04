@@ -47,15 +47,11 @@ const Signup = () => {
     formData.append("image", data.image);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/auth/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post("http://localhost:4000/api/v1/auth/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.dismiss(toastId);
       toast.success("Successfully Registered");
       navigate("/login");
@@ -203,7 +199,11 @@ const Signup = () => {
               type="submit"
               className="w-full p-2 bg-blue-500 text-white rounded"
             >
-              REGISTER NOW
+              {loading ? (
+                <div className="custom-loader"></div>
+              ) : (
+                <p>REGISTER</p>
+              )}
             </button>
           </div>
           <div className="text-center">

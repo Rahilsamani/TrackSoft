@@ -37,7 +37,11 @@ const Login = () => {
       );
       toast.dismiss(toastId);
       toast.success("Login Successfull");
-      console.log(response.data);
+
+      // add in localstorage
+      localStorage.setItem("token", JSON.stringify(response.data.token));
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
       // add in redux
       dispatch(setToken(response.data.token));
       dispatch(setUser({ ...response.data.user }));
@@ -93,7 +97,7 @@ const Login = () => {
               type="submit"
               className="w-full p-2 bg-blue-500 text-white rounded"
             >
-              LOGIN
+              {loading ? <div className="custom-loader"></div> : <p>LOGIN</p>}
             </button>
           </div>
           <div className="text-center">
