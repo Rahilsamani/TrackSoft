@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+import asyncio
+import httpx
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
@@ -36,8 +38,15 @@ sched.start()
 
 isrunning = False
 
+# Dependency to extract the token from Authorization header
+async def get_token(authorization: str = Header(None)):
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    token = authorization.replace("Bearer ", "")
+    return token
+
 # function for taking screenshot
-def take_screenshot():
+async def take_screenshot(token: str):
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
     
     screen_shot = ImageGrab.grab()
@@ -52,6 +61,21 @@ def take_screenshot():
     # remove the temp file
     os.remove(temp_path)
 
+    # post request to add the urls in users model
+    try:
+        update_url = "http://localhost:4000/api/v1/user/updateUser"
+        data = {
+            "imageUrl": response['secure_url']
+        }
+        headers = {
+            "Authorization": f"Bearer {token}"
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(update_url, json=data, headers=headers)
+            response.raise_for_status()
+    except Exception as error:
+        print('Error is', error)
+
 # function to clear the screenshots
 def clear_media():
     dir = 'media'
@@ -60,11 +84,14 @@ def clear_media():
 
 # api for taking screenshots
 @app.post("/start_screenshot")
-def start_screenshot(background_tasks: BackgroundTasks):
+async def start_screenshot(
+    background_tasks: BackgroundTasks,
+    token: str = Depends(get_token)
+):
     global isrunning
     if not isrunning:
         if not sched.get_job('screenshot_job'):
-            sched.add_job(take_screenshot, 'interval', seconds=5, id='screenshot_job')
+            sched.add_job(lambda: asyncio.run(take_screenshot(token)), 'interval', seconds=5, id='screenshot_job')
         else:
             sched.resume_job('screenshot_job')
         

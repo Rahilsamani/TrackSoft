@@ -58,6 +58,7 @@ const signUp = async (req, res) => {
       email,
       password: hashedPassword,
       image: profileImage.secure_url,
+      screenshots: [],
     });
 
     // send response

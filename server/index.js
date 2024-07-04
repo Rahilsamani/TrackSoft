@@ -1,5 +1,6 @@
 const express = require("express");
-const userRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -19,7 +20,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:8000"],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -35,7 +36,8 @@ app.use(
 cloudinaryConnect();
 
 // Routes
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/user", userRoutes);
 
 app.get("/", (req, res) => {
   return res.json({

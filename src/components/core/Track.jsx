@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Track = () => {
   const [timer, setTimer] = useState(null);
@@ -10,6 +11,7 @@ const Track = () => {
   const [inTime, setInTime] = useState("");
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     // The Timer will reset after midnight
@@ -49,7 +51,15 @@ const Track = () => {
       setIsRunning(true);
 
       try {
-        await axios.post("http://localhost:8000/start_screenshot");
+        await axios.post(
+          "http://localhost:8000/start_screenshot",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log("Screenshot taking started");
       } catch (error) {
         console.error("Error starting screenshot taking:", error);
@@ -132,14 +142,18 @@ const Track = () => {
         {/* Buttons */}
         <div className="flex justify-center items-center gap-10 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
           <button
-            className={`border border-black ${isRunning && 'opacity-50'} rounded-sm px-2`}
+            className={`border border-black ${
+              isRunning && "opacity-50"
+            } rounded-sm px-2`}
             onClick={startTimer}
             disabled={isRunning}
           >
             Start
           </button>
           <button
-            className={`border border-black ${!isRunning && 'opacity-50'} rounded-sm px-2`}
+            className={`border border-black ${
+              !isRunning && "opacity-50"
+            } rounded-sm px-2`}
             onClick={stopTimer}
             disabled={!isRunning}
           >
