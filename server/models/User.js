@@ -38,7 +38,12 @@ const userSchema = new mongoose.Schema(
           type: String,
           require: true,
         },
-        tableData: [tableDataSchema],
+        tableData: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "TableData",
+          },
+        ],
       },
     ],
   },

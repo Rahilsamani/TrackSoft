@@ -1,22 +1,30 @@
 const { TableData } = require("../models/TableData");
+const User = require("../models/User");
 const { calculateTotalWork } = require("../utils/calculateWork");
 
 const createTableData = async (req, res) => {
   try {
-    const { srNo, date, inTime, outTime } = req.body;
+    const { inTime, outTime } = req.body;
+    const userId = req.user.id;
 
-    if (!srNo || !date || !inTime || !outTime) {
+    if (!inTime || !outTime) {
       return res.status(400).json({
         success: false,
         message: "Please provide all details",
       });
     }
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     const totalWork = calculateTotalWork(inTime, outTime);
 
     const newTableData = await TableData.create({
-      srNo,
-      date,
       inTime,
       outTime,
       totalWork,

@@ -69,10 +69,20 @@ const getAllScreenshots = async (req, res) => {
   }
 };
 
-const updateDailyProgress = async (userId, tableData) => {
+const updateDailyProgress = async (req, res) => {
   const date = new Date().toLocaleDateString();
 
   try {
+    const userId = req.user.id;
+    const { tableData } = req.body;
+
+    if (!tableData) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid tableData format",
+      });
+    }
+
     const user = await User.findById(userId);
 
     if (!user) {
@@ -87,7 +97,7 @@ const updateDailyProgress = async (userId, tableData) => {
     );
 
     if (todayProgress) {
-      todayProgress.tableData = tableData;
+      todayProgress.tableData.push(tableData._id);
     } else {
       user.progress.push({
         date,

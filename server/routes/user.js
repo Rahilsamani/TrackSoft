@@ -9,6 +9,6 @@ const { auth } = require("../middlewares/auth");
 
 router.post("/updateUser", auth, updateUser);
 router.get("/getScreenshots", auth, getAllScreenshots);
-router.get("/updateProgress", auth, updateDailyProgress);
+router.post("/updateProgress", auth, updateDailyProgress);
 
 module.exports = router;

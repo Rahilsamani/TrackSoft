@@ -12,7 +12,7 @@ const Track = () => {
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const checkAndResetData = () => {
@@ -91,7 +91,15 @@ const Track = () => {
     insertElement();
 
     try {
-      await axios.post("http://localhost:8000/stop_screenshot");
+      await axios.post(
+        "http://localhost:8000/stop_screenshot",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Error stopping screenshot taking:", error);
     }
@@ -115,7 +123,7 @@ const Track = () => {
     return `${hours}:${minutes}:${seconds}`;
   };
 
-  const insertElement = () => {
+  const insertElement = async () => {
     const date = new Date();
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -136,6 +144,32 @@ const Track = () => {
 
     // Save to local storage
     localStorage.setItem("tableData", JSON.stringify(updatedTableData));
+
+    try {
+      const tableRow = await axios.post(
+        "http://localhost:4000/api/v1/table/createTableData",
+        newRow,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      await axios.post(
+        "http://localhost:4000/api/v1/user/updateProgress",
+        {
+          tableData: tableRow.data.newTableData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error saving table data:", error);
+    }
   };
 
   const saveTimerData = (isRunning) => {

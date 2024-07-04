@@ -1,14 +1,6 @@
 const mongoose = require("mongoose");
 
 const tableDataSchema = new mongoose.Schema({
-  srNo: {
-    type: Number,
-    required: true,
-  },
-  date: {
-    type: String,
-    required: true,
-  },
   inTime: {
     type: String,
     required: true,
