@@ -14,7 +14,7 @@ import PrivateRoute from "./components/core/PrivateRoute";
 
 function App() {
   return (
-    <div>
+    <div className="w-full overflow-hidden" >
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

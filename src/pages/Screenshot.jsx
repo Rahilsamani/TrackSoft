@@ -6,10 +6,12 @@ import { useSelector } from "react-redux";
 const Screenshot = () => {
   const [images, setImages] = useState([]);
   const { token } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchScreenshots = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           "http://localhost:4000/api/v1/user/getScreenshots",
           {
@@ -19,6 +21,7 @@ const Screenshot = () => {
           }
         );
         setImages(response.data.screenshots);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching screenshots:", error);
       }
@@ -26,6 +29,14 @@ const Screenshot = () => {
 
     fetchScreenshots();
   }, [token]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <div className="custom-loader"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center items-center">

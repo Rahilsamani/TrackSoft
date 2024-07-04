@@ -60,7 +60,6 @@ const Track = () => {
             },
           }
         );
-        console.log("Screenshot taking started");
       } catch (error) {
         console.error("Error starting screenshot taking:", error);
       }
@@ -75,7 +74,6 @@ const Track = () => {
 
     try {
       await axios.post("http://localhost:8000/stop_screenshot");
-      console.log("Screenshot taking stopped");
     } catch (error) {
       console.error("Error stopping screenshot taking:", error);
     }

@@ -40,10 +40,10 @@ const BlogSection = () => {
         <h2 className="text-5xl font-semibold text-blue text-shadow-custom leading-[1.8]">
           BLOGS
         </h2>
-        <div className="flex justify-between items-center gap-10 mt-10">
+        <div className="flex flex-wrap justify-center items-center gap-10 mt-10">
           {blogsDetails.map((blog, index) => {
             return (
-              <div className="w-[320px]" key={index}>
+              <div className="w-[400px] md:w-[320px]" key={index}>
                 <BlogsCard {...blog} />
               </div>
             );

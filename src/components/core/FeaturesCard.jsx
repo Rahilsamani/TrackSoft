@@ -5,7 +5,7 @@ import { FaCamera } from "react-icons/fa";
 
 const FeaturesCard = ({ icon, heading, description }) => {
   return (
-    <div className="flex flex-col gap-5 border-custom p-5 rounded-xl h-[280px] shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-2xl cursor-pointer">
+    <div className="flex flex-col gap-5 border-custom p-5 rounded-xl h-[300px] shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-2xl cursor-pointer">
       <div className="text-blue">
         {icon === "search" ? (
           <FaSearch size={40} />

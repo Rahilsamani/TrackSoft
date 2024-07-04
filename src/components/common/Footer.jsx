@@ -8,10 +8,10 @@ const Footer = () => {
   return (
     <div className="flex bg-[#F5F5F5] justify-center items-center py-10">
       <div className="w-11/12">
-        <div className="grid grid-cols-4 place-items-start justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 place-items-start justify-items-center gap-y-5">
           {/* Quick Links */}
           <div className="flex flex-col gap-5">
-            <h3 className="text-blue text-2xl font-semibold">Quick Links</h3>
+            <h3 className="text-blue text-2xl font-semibold w-[200px]">Quick Links</h3>
             <div className="text-grey flex flex-col gap-2">
               <div className="flex items-center gap-1 cursor-pointer group">
                 <FaChevronRight size={14} className="text-blue" />
@@ -41,7 +41,7 @@ const Footer = () => {
           </div>
           {/* Features */}
           <div className="flex flex-col gap-5">
-            <h3 className="text-blue text-2xl font-semibold">Features</h3>
+            <h3 className="text-blue text-2xl font-semibold w-[200px]">Features</h3>
             <div className="text-grey flex flex-col gap-2">
               <div className="flex items-center gap-1 cursor-pointer group">
                 <FaChevronRight size={14} className="text-blue" />
@@ -77,7 +77,7 @@ const Footer = () => {
           </div>
           {/* Contact Info */}
           <div className="flex flex-col gap-5">
-            <h3 className="text-blue text-2xl font-semibold">Contact Info</h3>
+            <h3 className="text-blue text-2xl font-semibold w-[200px]">Contact Info</h3>
             <div className="text-grey flex flex-col gap-2">
               <div className="flex items-center gap-1 cursor-pointer group">
                 <FaChevronRight size={14} className="text-blue" />
@@ -107,7 +107,7 @@ const Footer = () => {
           </div>
           {/* Follow Us */}
           <div className="flex flex-col gap-5">
-            <h3 className="text-blue text-2xl font-semibold">Follow Us</h3>
+            <h3 className="text-blue text-2xl font-semibold w-[200px]">Follow Us</h3>
             <div className="text-grey flex flex-col gap-2">
               <div className="flex items-center group gap-1 cursor-pointer">
                 <FaFacebookF size={16} className="text-blue" />

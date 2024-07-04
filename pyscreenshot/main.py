@@ -84,6 +84,7 @@ def clear_media():
 
 # api for taking screenshots
 @app.post("/start_screenshot")
+@app.post("/start_screenshot")
 async def start_screenshot(
     background_tasks: BackgroundTasks,
     token: str = Depends(get_token)
@@ -91,17 +92,34 @@ async def start_screenshot(
     global isrunning
     if not isrunning:
         if not sched.get_job('screenshot_job'):
+            # Schedule the screenshot job
             sched.add_job(lambda: asyncio.run(take_screenshot(token)), 'interval', seconds=5, id='screenshot_job')
         else:
             sched.resume_job('screenshot_job')
         
         if not sched.get_job('clear_media_job'):
+            # Schedule the media clearing job
             sched.add_job(clear_media, 'cron', hour=23, minute=42, id='clear_media_job')
         else:
             sched.resume_job('clear_media_job')
         
         isrunning = True
-    return
+        return {"success": True, "message": "Screenshot taking started"}
+    else:
+        return {"success": False, "message": "Screenshot taking is already running"}
+
+
+# api for stopping the screenshots
+@app.post("/stop_screenshot")
+def stop_screenshot():
+    global isrunning
+    if isrunning:
+        sched.pause_job('screenshot_job')
+        sched.pause_job('clear_media_job')
+        isrunning = False
+        return {"success": True, "message": "Screenshot taking stopped"}
+    else:
+        return {"success": False, "message": "Screenshot taking was not started"}
 
 # Run the application
 if __name__ == "__main__":
