@@ -132,7 +132,7 @@ const Track = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {/* Timer */}
-      <div className="w-1/3 flex flex-col justify-center items-center h-1/3 mt-16">
+      <div className="w-[65%] sm:w-[350px] flex flex-col justify-center items-center h-1/3 mt-16">
         {/* Time */}
         <div className="flex justify-center items-center text-center w-full p-5 text-[#f3f3f3] bg-[#202f5e] rounded-t-lg text-3xl">
           {timeStr}

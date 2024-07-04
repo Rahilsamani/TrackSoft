@@ -23,7 +23,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-grey bg-slate-800 py-10">
+    <div className="md:flex hidden h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-grey bg-slate-800 py-10">
       <div className="flex flex-col gap-2">
         {sideLinks.map((link, index) => {
           const Icon = Icons[link.icon];

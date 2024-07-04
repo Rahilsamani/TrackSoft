@@ -6,7 +6,7 @@ const ImageGallery = ({ images = [] }) => {
           No screenshots have been taken yet
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {images.map((img, index) => (
             <div key={index} className="p-2">
               <img
