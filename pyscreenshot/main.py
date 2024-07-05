@@ -23,16 +23,16 @@ cloudinary.config(
 
 app = FastAPI()
 
-# cors middleware
+# CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://tracksoft.vercel.app/"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# create default background scheduler
+# Create default background scheduler
 sched = BackgroundScheduler()
 sched.start()
 
@@ -45,7 +45,7 @@ async def get_token(authorization: str = Header(None)):
     token = authorization.replace("Bearer ", "")
     return token
 
-# function for taking screenshot
+# Function for taking screenshot
 async def take_screenshot(token: str):
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
     
@@ -55,13 +55,13 @@ async def take_screenshot(token: str):
     temp_path = f"./{image_name}"
     screen_shot.save(temp_path)
 
-    # upload in cloudinary
+    # Upload to Cloudinary
     response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
 
-    # remove the temp file
+    # Remove the temp file
     os.remove(temp_path)
 
-    # post request to add the urls in users model
+    # Post request to add the URLs to the user's model
     try:
         update_url = "http://localhost:4000/api/v1/user/updateUser"
         data = {
@@ -76,14 +76,13 @@ async def take_screenshot(token: str):
     except Exception as error:
         print('Error is', error)
 
-# function to clear the screenshots
+# Function to clear the screenshots
 def clear_media():
     dir = 'media'
     shutil.rmtree(dir)
     os.mkdir(dir)
 
-# api for taking screenshots
-@app.post("/start_screenshot")
+# API for taking screenshots
 @app.post("/start_screenshot")
 async def start_screenshot(
     background_tasks: BackgroundTasks,
@@ -108,8 +107,7 @@ async def start_screenshot(
     else:
         return {"success": False, "message": "Screenshot taking is already running"}
 
-
-# api for stopping the screenshots
+# API for stopping the screenshots
 @app.post("/stop_screenshot")
 def stop_screenshot():
     global isrunning
@@ -123,5 +121,6 @@ def stop_screenshot():
 
 # Run the application
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))  # Use PORT environment variable or default to 8000
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+
