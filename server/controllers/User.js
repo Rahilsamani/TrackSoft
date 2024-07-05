@@ -128,7 +128,13 @@ const getUserDetails = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate({
+      path: "progress",
+      populate: {
+        path: "tableData",
+        model: "TableData",
+      },
+    });
 
     if (!user) {
       return res.status(404).json({

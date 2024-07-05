@@ -1,11 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import {
-  AiOutlineCheck,
-  AiOutlineClose,
-  AiOutlineInfoCircle,
-} from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
 
 const Progress = () => {
@@ -67,7 +63,7 @@ const Progress = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 p-6">
+    <div className="min-h-screen bg-gray-100 text-gray-900 p-6 rounded-3xl">
       <header className="bg-green-600 p-6 rounded-lg shadow-md">
         <h1 className="text-3xl font-semibold text-white">Your Progress</h1>
       </header>
@@ -149,9 +145,6 @@ const Progress = () => {
                 <th className="py-3 px-4 text-center text-gray-600 font-semibold">
                   Completed
                 </th>
-                <th className="py-3 px-4 text-center text-gray-600 font-semibold">
-                  Details
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -175,12 +168,6 @@ const Progress = () => {
                         <AiOutlineClose />
                       </span>
                     )}
-                  </td>
-                  <td className="py-3 px-4 text-gray-700">
-                    <button className="text-blue-500 hover:underline flex items-center mx-auto gap-x-1">
-                      <AiOutlineInfoCircle />
-                      Details
-                    </button>
                   </td>
                 </tr>
               ))}
