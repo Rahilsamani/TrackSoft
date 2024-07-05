@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { setCount } from "../../slices/countSlice";
+import toast from "react-hot-toast";
 
 const Track = () => {
   const [timer, setTimer] = useState(null);
@@ -12,7 +14,8 @@ const Track = () => {
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const { token, user } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { count } = useSelector((state) => state.count);
 
   useEffect(() => {
     const checkAndResetData = () => {
@@ -67,18 +70,27 @@ const Track = () => {
       setIsRunning(true);
       saveTimerData(true);
 
-      try {
-        await axios.post(
-          "https://tracksoft.onrender.com/start_screenshot",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      if (count <= 5) {
+        try {
+          const response = await axios.post(
+            "https://tracksoft.onrender.com/start_screenshot",
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.data.success == false) {
+            setCount(6);
+            localStorage.setItem("count", JSON.stringify(6));
           }
-        );
-      } catch (error) {
-        console.error("Error starting screenshot taking:", error);
+        } catch (error) {
+          console.error("Error starting screenshot taking:", error);
+        }
+      } else {
+        toast.error("You Have Reached Free Trial");
       }
     }
   };
@@ -90,18 +102,26 @@ const Track = () => {
     saveTimerData(false);
     insertElement();
 
-    try {
-      await axios.post(
-        "https://tracksoft.onrender.com/stop_screenshot",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    if (count <= 5) {
+      try {
+        const response = await axios.post(
+          "https://tracksoft.onrender.com/stop_screenshot",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.success == false) {
+          setCount(6);
+          localStorage.setItem("count", JSON.stringify(6));
         }
-      );
-    } catch (error) {
-      console.error("Error stopping screenshot taking:", error);
+      } catch (error) {
+        console.error("Error stopping screenshot taking:", error);
+      }
+    } else {
+      toast.error("You Have Reached Free Trial");
     }
   };
 

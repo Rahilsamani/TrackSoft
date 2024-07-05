@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["https://tracksoft.vercel.app/", "https://tracksoft.onrender.com"],
+    origin: ["https://tracksoft.vercel.app", "https://tracksoft.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   })
