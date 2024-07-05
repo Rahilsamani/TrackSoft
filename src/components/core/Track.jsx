@@ -69,7 +69,7 @@ const Track = () => {
 
       try {
         await axios.post(
-          "http://localhost:8000/start_screenshot",
+          "https://tracksoft.onrender.com/start_screenshot",
           {},
           {
             headers: {
@@ -92,7 +92,7 @@ const Track = () => {
 
     try {
       await axios.post(
-        "http://localhost:8000/stop_screenshot",
+        "https://tracksoft.onrender.com/stop_screenshot",
         {},
         {
           headers: {
@@ -147,7 +147,7 @@ const Track = () => {
 
     try {
       const tableRow = await axios.post(
-        "http://localhost:4000/api/v1/table/createTableData",
+        "https://tracksoft-node.onrender.com/api/v1/table/createTableData",
         newRow,
         {
           headers: {
@@ -157,7 +157,7 @@ const Track = () => {
       );
 
       await axios.post(
-        "http://localhost:4000/api/v1/user/updateProgress",
+        "https://tracksoft-node.onrender.com/api/v1/user/updateProgress",
         {
           tableData: tableRow.data.newTableData,
         },

@@ -26,7 +26,7 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["https://tracksoft.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -63,7 +63,7 @@ async def take_screenshot(token: str):
 
     # Post request to add the URLs to the user's model
     try:
-        update_url = "http://localhost:4000/api/v1/user/updateUser"
+        update_url = "https://tracksoft-node.onrender.com/api/v1/user/updateUser"
         data = {
             "imageUrl": response['secure_url']
         }
