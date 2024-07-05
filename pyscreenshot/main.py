@@ -26,7 +26,7 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://tracksoft.vercel.app/"],
+    allow_origins=["https://tracksoft.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
