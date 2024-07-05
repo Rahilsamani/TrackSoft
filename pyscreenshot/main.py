@@ -82,6 +82,10 @@ def clear_media():
     shutil.rmtree(dir)
     os.mkdir(dir)
 
+@app.get("/")
+async def read_root():
+    return {"message": "Welcome to the TrackSoft API"}
+
 # API for taking screenshots
 @app.post("/start_screenshot")
 async def start_screenshot(
