@@ -47,7 +47,7 @@ const Signup = () => {
     formData.append("image", data.image);
 
     try {
-      await axios.post("https://tracksoft-node.onrender.com/api/v1/auth/signup", formData, {
+      await axios.post("http://localhost:4000/api/v1/auth/signup", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

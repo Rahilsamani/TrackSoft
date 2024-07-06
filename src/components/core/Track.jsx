@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { setBlock } from "../../slices/authSlice";
-import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const Track = () => {
   const [timer, setTimer] = useState(null);
@@ -14,8 +12,7 @@ const Track = () => {
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const { token, block } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const checkAndResetData = () => {
@@ -72,7 +69,7 @@ const Track = () => {
 
       try {
         await axios.post(
-          "https://tracksoft.onrender.com/start_screenshot",
+          "http://localhost:8000/start_screenshot",
           { token },
           {
             headers: {
@@ -95,7 +92,7 @@ const Track = () => {
 
     try {
       await axios.post(
-        "https://tracksoft.onrender.com/stop_screenshot",
+        "http://localhost:8000/stop_screenshot",
         {},
         {
           headers: {
@@ -150,7 +147,7 @@ const Track = () => {
 
     try {
       const tableRow = await axios.post(
-        "https://tracksoft-node.onrender.com/api/v1/table/createTableData",
+        "http://localhost:4000/api/v1/table/createTableData",
         newRow,
         {
           headers: {
@@ -160,7 +157,7 @@ const Track = () => {
       );
 
       await axios.post(
-        "https://tracksoft-node.onrender.com/api/v1/user/updateProgress",
+        "http://localhost:4000/api/v1/user/updateProgress",
         {
           tableData: tableRow.data.newTableData,
         },
@@ -198,32 +195,7 @@ const Track = () => {
     const hourStr = hour < 10 ? "0" + hour : hour;
 
     setTimeStr(`${hourStr}:${minStr}:${secStr}`);
-
-    const checkAndBlockUser = async () => {
-      if (min === 1 && sec === 0) {
-        stopTimer();
-        try {
-          await axios.post(
-            "https://tracksoft-node.onrender.com/api/v1/user/updateUser",
-            {
-              block: true,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          dispatch(setBlock(true));
-          toast.error("You have reached the limit of your free trial.");
-        } catch (error) {
-          console.log("Error While updating user", error);
-        }
-      }
-    };
-
-    checkAndBlockUser();
-  }, [sec, min, hour, token, dispatch]);
+  }, [sec, min, hour]);
 
   useEffect(() => {
     saveTimerData(isRunning);
@@ -241,19 +213,19 @@ const Track = () => {
         <div className="flex justify-center items-center gap-10 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
           <button
             className={`border border-black ${
-              isRunning || block ? "opacity-50" : ""
+              isRunning && "opacity-50"
             } rounded-sm px-2`}
             onClick={startTimer}
-            disabled={isRunning || block}
+            disabled={isRunning}
           >
             Start
           </button>
           <button
             className={`border border-black ${
-              !isRunning || block ? "opacity-50" : ""
+              !isRunning && "opacity-50"
             } rounded-sm px-2`}
             onClick={stopTimer}
-            disabled={!isRunning || block}
+            disabled={!isRunning}
           >
             Stop
           </button>

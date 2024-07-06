@@ -6,15 +6,15 @@ from dotenv import load_dotenv
 import os
 import shutil
 from datetime import datetime
+import pyscreenshot as ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
-import mss
 
 # Load .env file
 load_dotenv()
 
-# Config Cloudinary
+# Config cloudinary
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -26,7 +26,7 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://tracksoft.vercel.app"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,22 +47,23 @@ async def get_token(authorization: str = Header(None)):
 # Function for taking screenshot
 async def take_screenshot(token: str):
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
-    
-    with mss.mss() as sct:
-        screenshot = sct.shot(output=image_name)
+    screen_shot = ImageGrab.grab()
+
+    # Save screenshot to a temporary location
+    temp_path = f"./{image_name}"
+    screen_shot.save(temp_path)
 
     # Upload to Cloudinary
-    response = cloudinary.uploader.upload(image_name, folder="TrackSoft")
-    
+    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
+
     # Remove the temp file
-    os.remove(image_name)
-    
+    os.remove(temp_path)
+
     # Post request to add the URLs to the user's model
     try:
         update_url = "http://localhost:4000/api/v1/user/updateUser"
         data = {"imageUrl": response['secure_url']}
         headers = {"Authorization": f"Bearer {token}"}
-        
         async with httpx.AsyncClient() as client:
             response = await client.post(update_url, json=data, headers=headers)
             response.raise_for_status()

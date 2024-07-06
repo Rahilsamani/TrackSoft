@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 const updateUser = async (req, res) => {
   try {
-    const { imageUrl, block } = req.body;
+    const { imageUrl } = req.body;
     const userId = req.user.id;
 
     const user = await User.findById(userId);
@@ -14,13 +14,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    if (imageUrl != null) {
-      user.screenshots.push(imageUrl);
-    }
-
-    if (block) {
-      user.block = block;
-    }
+    user.screenshots.push(imageUrl);
 
     await user.save();
 

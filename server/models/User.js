@@ -31,10 +31,6 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    block: {
-      type: Boolean,
-      require: true,
-    },
     progress: [
       {
         date: {

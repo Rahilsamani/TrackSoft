@@ -13,7 +13,7 @@ const Screenshot = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://tracksoft-node.onrender.com/api/v1/user/getScreenshots",
+          "http://localhost:4000/api/v1/user/getScreenshots",
           {
             headers: {
               Authorization: `Bearer ${token}`,
