@@ -46,7 +46,7 @@ const Login = () => {
       // add in redux
       dispatch(setToken(response.data.token));
       dispatch(setUser({ ...response.data.user }));
-      dispatch(setBlock({ ...response.data.user.block }));
+      dispatch(setBlock(response.data.user.block));
 
       navigate("/");
     } catch (error) {

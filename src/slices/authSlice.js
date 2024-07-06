@@ -9,7 +9,7 @@ const initialState = {
     : null,
   block: localStorage.getItem("block")
     ? JSON.parse(localStorage.getItem("block"))
-    : null,
+    : false,
 };
 
 const authSlice = createSlice({
