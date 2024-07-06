@@ -10,7 +10,7 @@ import { FiMonitor, FiImage } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
-import { setToken, setUser } from "../../slices/authSlice";
+import { setBlock, setToken, setUser } from "../../slices/authSlice";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
@@ -27,8 +27,10 @@ export default function ProfileDropdown() {
   const logout = () => {
     dispatch(setToken(null));
     dispatch(setUser(null));
+    dispatch(setBlock(false));
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("block");
     toast.success("Logged Out");
     navigate("/");
   };

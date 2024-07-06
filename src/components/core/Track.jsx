@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setBlock } from "../../slices/authSlice";
+import toast from "react-hot-toast";
 
 const Track = () => {
   const [timer, setTimer] = useState(null);
@@ -12,7 +14,8 @@ const Track = () => {
   const [timeStr, setTimeStr] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const { token } = useSelector((state) => state.auth);
+  const { token, block } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const checkAndResetData = () => {
@@ -195,7 +198,32 @@ const Track = () => {
     const hourStr = hour < 10 ? "0" + hour : hour;
 
     setTimeStr(`${hourStr}:${minStr}:${secStr}`);
-  }, [sec, min, hour]);
+
+    const checkAndBlockUser = async () => {
+      if (min === 1 && sec === 0) {
+        stopTimer();
+        try {
+          await axios.post(
+            "https://tracksoft-node.onrender.com/api/v1/user/updateUser",
+            {
+              block: true,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          dispatch(setBlock(true));
+          toast.error("You have reached the limit of your free trial.");
+        } catch (error) {
+          console.log("Error While updating user", error);
+        }
+      }
+    };
+
+    checkAndBlockUser();
+  }, [sec, min, hour, token, dispatch]);
 
   useEffect(() => {
     saveTimerData(isRunning);
@@ -213,19 +241,19 @@ const Track = () => {
         <div className="flex justify-center items-center gap-10 text-center p-5 bg-[#EBF4F6] rounded-b-lg w-full">
           <button
             className={`border border-black ${
-              isRunning && "opacity-50"
+              isRunning || block ? "opacity-50" : ""
             } rounded-sm px-2`}
             onClick={startTimer}
-            disabled={isRunning}
+            disabled={isRunning || block}
           >
             Start
           </button>
           <button
             className={`border border-black ${
-              !isRunning && "opacity-50"
+              !isRunning || block ? "opacity-50" : ""
             } rounded-sm px-2`}
             onClick={stopTimer}
-            disabled={!isRunning}
+            disabled={!isRunning || block}
           >
             Stop
           </button>

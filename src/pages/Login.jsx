@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "../slices/authSlice";
+import { setBlock, setToken, setUser } from "../slices/authSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -41,10 +41,12 @@ const Login = () => {
       // add in localstorage
       localStorage.setItem("token", JSON.stringify(response.data.token));
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("block", JSON.stringify(response.data.user.block));
 
       // add in redux
       dispatch(setToken(response.data.token));
       dispatch(setUser({ ...response.data.user }));
+      dispatch(setBlock({ ...response.data.user.block }));
 
       navigate("/");
     } catch (error) {
