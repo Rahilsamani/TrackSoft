@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import shutil
 from datetime import datetime
-import pyscreenshot as ImageGrab
+from PIL import ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
