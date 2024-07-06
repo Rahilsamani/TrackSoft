@@ -2,20 +2,27 @@ const User = require("../models/User");
 
 const updateUser = async (req, res) => {
   try {
-    const { imageUrl, incrementCount } = req.body;
+    const { imageUrl, block } = req.body;
     const userId = req.user.id;
 
-    const updateData = {
-      $push: { screenshots: imageUrl },
-    };
+    const user = await User.findById(userId);
 
-    if (incrementCount) {
-      updateData.$inc = { count: 1 };
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    const user = await User.findByIdAndUpdate(userId, updateData, {
-      new: true,
-    });
+    if (imageUrl != null) {
+      user.screenshots.push(imageUrl);
+    }
+
+    if (block) {
+      user.block = block;
+    }
+
+    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -148,36 +155,9 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-const getUserCount = async (req, res) => {
-  try {
-    const { userId } = req.body;
-
-    const user = await User.findById(userId).select("count");
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User Not Found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      count: user.count,
-      message: "User Count Fetched Successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Something Went Wrong While Fetching Users Count",
-    });
-  }
-};
-
 module.exports = {
   updateUser,
   getAllScreenshots,
   updateDailyProgress,
   getUserDetails,
-  getUserCount,
 };

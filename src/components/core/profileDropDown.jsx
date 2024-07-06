@@ -13,7 +13,6 @@ import useOnClickOutside from "../../hooks/useOnClickOutside";
 import { setToken, setUser } from "../../slices/authSlice";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { setCount } from "../../slices/countSlice";
 
 export default function ProfileDropdown() {
   const { user } = useSelector((state) => state.auth);
@@ -28,10 +27,8 @@ export default function ProfileDropdown() {
   const logout = () => {
     dispatch(setToken(null));
     dispatch(setUser(null));
-    dispatch(setCount(0));
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("count");
     toast.success("Logged Out");
     navigate("/");
   };

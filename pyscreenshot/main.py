@@ -11,10 +11,10 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
 
-# load .env file
+# Load .env file
 load_dotenv()
 
-# config cloudinary
+# Config Cloudinary
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -26,7 +26,7 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://tracksoft.vercel.app"],
+    allow_origins=["https://tracksoft.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,7 +35,6 @@ app.add_middleware(
 # Create default background scheduler
 sched = BackgroundScheduler()
 sched.start()
-
 isrunning = False
 
 # Dependency to extract the token from Authorization header
@@ -45,62 +44,27 @@ async def get_token(authorization: str = Header(None)):
     token = authorization.replace("Bearer ", "")
     return token
 
-# Function to get the user's screenshot count
-async def get_user_count(token: str):
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://tracksoft-node.onrender.com/api/v1/user/getUserCount",
-                headers={"Authorization": f"Bearer {token}"}
-            )
-            response.raise_for_status()
-            data = response.json()
-            if data['success']:
-                return data['count']
-            else:
-                raise HTTPException(status_code=400, detail=data['message'])
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-# Function to stop the screenshot-taking process
-def stop_screenshot_task():
-    global isrunning
-    if isrunning:
-        sched.pause_job('screenshot_job')
-        sched.pause_job('clear_media_job')
-        isrunning = False
-
 # Function for taking screenshot
 async def take_screenshot(token: str):
-    count = await get_user_count(token)
-    if count >= 5:
-        stop_screenshot_task()
-        raise HTTPException(status_code=403, detail="You have used your free version limit")
-
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
-    
     screen_shot = ImageGrab.grab()
     
     # Save screenshot to a temporary location
     temp_path = f"./{image_name}"
     screen_shot.save(temp_path)
-
+    
     # Upload to Cloudinary
     response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
-
+    
     # Remove the temp file
     os.remove(temp_path)
-
+    
     # Post request to add the URLs to the user's model
     try:
         update_url = "https://tracksoft-node.onrender.com/api/v1/user/updateUser"
-        data = {
-            "imageUrl": response['secure_url'],
-            "incrementCount": True
-        }
-        headers = {
-            "Authorization": f"Bearer {token}"
-        }
+        data = {"imageUrl": response['secure_url']}
+        headers = {"Authorization": f"Bearer {token}"}
+        
         async with httpx.AsyncClient() as client:
             response = await client.post(update_url, json=data, headers=headers)
             response.raise_for_status()
@@ -119,16 +83,9 @@ async def read_root():
 
 # API for taking screenshots
 @app.post("/start_screenshot")
-async def start_screenshot(
-    background_tasks: BackgroundTasks,
-    token: str = Depends(get_token)
-):
+async def start_screenshot(background_tasks: BackgroundTasks, token: str = Depends(get_token)):
     global isrunning
     if not isrunning:
-        count = await get_user_count(token)
-        if count >= 5:
-            return {"success": False, "message": "You have used your free version limit"}
-        
         if not sched.get_job('screenshot_job'):
             # Schedule the screenshot job
             sched.add_job(lambda: asyncio.run(take_screenshot(token)), 'interval', seconds=5, id='screenshot_job')
@@ -149,11 +106,16 @@ async def start_screenshot(
 # API for stopping the screenshots
 @app.post("/stop_screenshot")
 def stop_screenshot():
-    stop_screenshot_task()
-    return {"success": True, "message": "Screenshot taking stopped"}
+    global isrunning
+    if isrunning:
+        sched.pause_job('screenshot_job')
+        sched.pause_job('clear_media_job')
+        isrunning = False
+        return {"success": True, "message": "Screenshot taking stopped"}
+    else:
+        return {"success": False, "message": "Screenshot taking was not started"}
 
 # Run the application
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
-

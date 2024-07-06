@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../slices/authSlice";
-import { setCount } from "../slices/countSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -42,12 +41,10 @@ const Login = () => {
       // add in localstorage
       localStorage.setItem("token", JSON.stringify(response.data.token));
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("count", JSON.stringify(response.data.user.count));
 
       // add in redux
       dispatch(setToken(response.data.token));
       dispatch(setUser({ ...response.data.user }));
-      dispatch(setCount(response.data.user.count));
 
       navigate("/");
     } catch (error) {

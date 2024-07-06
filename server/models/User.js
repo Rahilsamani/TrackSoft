@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    count: {
-      type: Number,
-      default: 0,
+    block: {
+      type: Boolean,
+      require: true,
     },
     progress: [
       {
