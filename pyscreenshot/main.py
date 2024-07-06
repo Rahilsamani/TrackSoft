@@ -9,7 +9,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
-import pyscreenshot as ImageGrab
+from PIL import ImageGrab
 
 # Load .env file
 load_dotenv()
