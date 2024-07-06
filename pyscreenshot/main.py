@@ -9,7 +9,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
-from PIL import ImageGrab
+from sys import platform
 
 # Load .env file
 load_dotenv()
@@ -47,7 +47,13 @@ async def get_token(authorization: str = Header(None)):
 # Function for taking screenshot
 async def take_screenshot(token: str):
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
-    screen_shot = ImageGrab.grab()
+    
+    if platform == "win32":
+        from PIL import ImageGrab
+        screen_shot = ImageGrab.grab()
+    else:
+        import pyscreenshot as ImageGrab
+        screen_shot = ImageGrab.grab()
     
     # Save screenshot to a temporary location
     temp_path = f"./{image_name}"
