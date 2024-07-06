@@ -9,7 +9,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
-from sys import platform
+import mss
 
 # Load .env file
 load_dotenv()
@@ -48,22 +48,14 @@ async def get_token(authorization: str = Header(None)):
 async def take_screenshot(token: str):
     image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
     
-    if platform == "win32":
-        from PIL import ImageGrab
-        screen_shot = ImageGrab.grab()
-    else:
-        import pyscreenshot as ImageGrab
-        screen_shot = ImageGrab.grab()
-    
-    # Save screenshot to a temporary location
-    temp_path = f"./{image_name}"
-    screen_shot.save(temp_path)
-    
+    with mss.mss() as sct:
+        screenshot = sct.shot(output=image_name)
+
     # Upload to Cloudinary
-    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
+    response = cloudinary.uploader.upload(image_name, folder="TrackSoft")
     
     # Remove the temp file
-    os.remove(temp_path)
+    os.remove(image_name)
     
     # Post request to add the URLs to the user's model
     try:
