@@ -65,7 +65,7 @@ const Signup = () => {
 
   return (
     <div className="bg-[#F6F5F5ff] flex justify-center items-center">
-      <div className="bg-white w-[45%] shadow-xl p-5 mt-10 mb-20">
+      <div className="bg-white w-[80%] md:w-[45%] shadow-xl p-5 mt-10 mb-20">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-3xl font-semibold text-center mb-5 text-blue">
             REGISTER NOW
@@ -111,8 +111,8 @@ const Signup = () => {
           </div>
 
           {/* First Name And Last Name */}
-          <div className="mb-4 flex gap-2">
-            <div className="w-1/2">
+          <div className="mb-4 flex flex-col gap-2 md:flex-row">
+            <div className="w-full md:w-1/2">
               <label className="block text-gray-700">First Name</label>
               <input
                 type="text"
@@ -126,7 +126,7 @@ const Signup = () => {
                 </p>
               )}
             </div>
-            <div className="w-1/2">
+            <div className="w-full md:w-1/2">
               <label className="block text-gray-700">Last Name</label>
               <input
                 type="text"
@@ -157,8 +157,8 @@ const Signup = () => {
           </div>
 
           {/* Password And Confirm Password */}
-          <div className="flex gap-2">
-            <div className="w-1/2">
+          <div className="flex flex-col md:flex-row gap-2">
+            <div className="w-full md:w-1/2">
               <label className="block text-gray-700">Password</label>
               <input
                 type="password"
@@ -173,7 +173,7 @@ const Signup = () => {
               )}
             </div>
 
-            <div className="w-1/2">
+            <div className="w-full md:w-1/2">
               <label className="block text-gray-700">Confirm Password</label>
               <input
                 type="password"

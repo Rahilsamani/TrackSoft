@@ -58,8 +58,8 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-[#F6F5F5ff] flex justify-center items-center">
-      <div className="bg-white w-[45%] shadow-xl p-5 mt-10 mb-20">
+    <div className="bg-[#F6F5F5ff] h-screen flex justify-center items-center">
+      <div className="bg-white w-[80%] md:w-[45%] shadow-xl p-5 mt-10 mb-20">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-3xl font-semibold text-center mb-5 text-blue">
             LOGIN NOW
