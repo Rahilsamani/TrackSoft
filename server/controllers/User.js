@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const redis = require("../config/redis");
 
 const updateUser = async (req, res) => {
   try {
@@ -18,6 +19,11 @@ const updateUser = async (req, res) => {
 
     await user.save();
 
+    await Promise.all([
+      redis.del(`user:${userId}:screenshots`),
+      redis.del(`user:${userId}:details`),
+    ]);
+
     return res.status(200).json({
       success: true,
       user,
@@ -36,7 +42,18 @@ const getAllScreenshots = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await User.findById(userId);
+    // check cache
+    const cachedScreenshots = await redis.get(`user:${userId}:screenshots`);
+    let user;
+
+    if (cachedScreenshots) {
+      user = JSON.parse(cachedScreenshots);
+    } else {
+      user = await User.findById(userId);
+      if (user) {
+        await redis.set(`user:${userId}:screenshots`, JSON.stringify(user));
+      }
+    }
 
     if (!user) {
       return res.status(404).json({
@@ -102,6 +119,9 @@ const updateDailyProgress = async (req, res) => {
 
     await user.save();
 
+    // invalidate the cache
+    await redis.del(`user:${userId}:details`);
+
     return res.status(200).json({
       success: true,
       message: "Progress updated successfully",
@@ -120,13 +140,23 @@ const getUserDetails = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await User.findById(userId).populate({
-      path: "progress",
-      populate: {
-        path: "tableData",
-        model: "TableData",
-      },
-    });
+    const cachedUser = await redis.get(`user:${userId}:details`);
+    let user;
+
+    if (cachedUser) {
+      user = JSON.parse(cachedUser);
+    } else {
+      user = await User.findById(userId).populate({
+        path: "progress",
+        populate: {
+          path: "tableData",
+          model: "TableData",
+        },
+      });
+      if (user) {
+        await redis.set(`user:${userId}:details`, JSON.stringify(user));
+      }
+    }
 
     if (!user) {
       return res.status(404).json({
