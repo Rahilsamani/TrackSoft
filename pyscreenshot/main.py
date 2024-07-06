@@ -6,15 +6,10 @@ from dotenv import load_dotenv
 import os
 import shutil
 from datetime import datetime
-from PIL import ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
-import platform
-from typing import Optional
-
-if platform.system() != "Windows":
-    from xvfbwrapper import Xvfb
+import pyscreenshot as ImageGrab
 
 # Load .env file
 load_dotenv()
@@ -51,40 +46,30 @@ async def get_token(authorization: str = Header(None)):
 
 # Function for taking screenshot
 async def take_screenshot(token: str):
-    if platform.system() != "Windows":
-        vdisplay = Xvfb()
-        vdisplay.start()
-    else:
-        vdisplay = None
-
+    image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
+    screen_shot = ImageGrab.grab()
+    
+    # Save screenshot to a temporary location
+    temp_path = f"./{image_name}"
+    screen_shot.save(temp_path)
+    
+    # Upload to Cloudinary
+    response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
+    
+    # Remove the temp file
+    os.remove(temp_path)
+    
+    # Post request to add the URLs to the user's model
     try:
-        image_name = f"screenshot-{str(datetime.now()).replace(':', '')}.png"
-        screen_shot = ImageGrab.grab()
+        update_url = "http://localhost:4000/api/v1/user/updateUser"
+        data = {"imageUrl": response['secure_url']}
+        headers = {"Authorization": f"Bearer {token}"}
         
-        # Save screenshot to a temporary location
-        temp_path = f"./{image_name}"
-        screen_shot.save(temp_path)
-        
-        # Upload to Cloudinary
-        response = cloudinary.uploader.upload(temp_path, folder="TrackSoft")
-        
-        # Remove the temp file
-        os.remove(temp_path)
-        
-        # Post request to add the URLs to the user's model
-        try:
-            update_url = "http://localhost:4000/api/v1/user/updateUser"
-            data = {"imageUrl": response['secure_url']}
-            headers = {"Authorization": f"Bearer {token}"}
-            
-            async with httpx.AsyncClient() as client:
-                response = await client.post(update_url, json=data, headers=headers)
-                response.raise_for_status()
-        except Exception as error:
-            print('Error is', error)
-    finally:
-        if vdisplay:
-            vdisplay.stop()
+        async with httpx.AsyncClient() as client:
+            response = await client.post(update_url, json=data, headers=headers)
+            response.raise_for_status()
+    except Exception as error:
+        print('Error is', error)
 
 # Function to clear the screenshots
 def clear_media():
