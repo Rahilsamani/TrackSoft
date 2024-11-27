@@ -10,6 +10,7 @@ import pyscreenshot as ImageGrab
 from apscheduler.schedulers.background import BackgroundScheduler
 import cloudinary
 import cloudinary.uploader
+import uvicorn
 
 # Load .env file
 load_dotenv()
@@ -118,3 +119,5 @@ def stop_screenshot():
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+
+# uvicorn main:app --reload
