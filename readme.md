@@ -137,25 +137,25 @@ cd TrackSoft
 Here are some screenshots of the application:
 
 - **SignUp Page**:
-  ![SignUp Page](https://example.com/timer-feature.png)
+  ![SignUp Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/register.png?raw=true)
 
 - **Login Page**:
-  ![Login Page](https://example.com/timer-feature.png)
+  ![Login Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/login.png?raw=true)
 
 - **Home Page**:
-  ![Home Page](https://example.com/timer-feature.png)
+  ![Home Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/home.png?raw=true)
 
 - **About Page**:
-  ![Home Page](https://example.com/timer-feature.png)
+  ![Home Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/about.png?raw=true)
 
 - **Timer Feature**:
-  ![Timer Feature](https://example.com/timer-feature.png)
+  ![Timer Feature](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/timer.png?raw=true)
 
 - **Screenshots Page**:
-  ![Screenshots Page](https://example.com/screenshots-page.png)
+  ![Screenshots Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/screenshots.png?raw=true)
 
 - **Progress Page**:
-  ![Progress Page](https://example.com/progress-page.png)
+  ![Progress Page](https://github.com/Rahilsamani/TrackSoft/blob/main/Project%20Images/progress.png?raw=true)
 
 ## Contributing
 
